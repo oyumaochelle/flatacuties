@@ -11,21 +11,17 @@
         <h1>Flatacuties: Vote for the Cutest Animal</h1>
     </header>
     <main>
+        <h2>Click an animal's name to see its details:</h2>
         <ul id="character-list">
-            <!-- Animal details will be displayed here -->
         </ul>
+        </ul>
+        <h2>Animal's details: </h2>
         <div id="character-details">
-            <label for="name">Name</label>
-            <input type="text" id="name" name="name" readonly>
-            <label for="image">Image</label>
-            <input type="text" id="image_url" name="image" readonly>
-            <label for="votes">Votes</label>
-            <input type="text" id="votes" name="votes" readonly>
-            <div id="btn">
-                <button type="button" onclick="voteForAnimal()">Vote for the animal</button>
-            </div>
+            <!-- Animal details will be displayed here -->
         </div>
-        
+        <div id="btn">
+            <button type="button" id="voteButton" onclick="voteForAnimal()">Vote for the animal</button>
+        </div>
     </main>
     <script src="index.js"></script>
 </body>

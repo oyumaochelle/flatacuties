@@ -32,25 +32,27 @@ function displayCharacterDetails(characterId) {
                 <label for="name">Name</label>
                 <input type="text" id="name" name="name" value="${character.name}">
                 <label for="image_url">Image</label>
-                <input type="text" id="image_url" name="image" value="${character.image}">
+                <img src="${character.image}" alt="${character.name}" id="image_url">
                 <label for="votes">Votes</label>
                 <input type="text" id="votes" name="votes" value="${character.votes}">
-                <div id="btn">
-                    <button type="button" onclick="voteForAnimal(${character.id})">Vote for the animal</button>
-                </div>
             `;
         })
         .catch(error => console.error("Error fetching animal details:", error));
 }
 
+
 function voteForAnimal() {
+    const voteButton = document.getElementById("voteButton"); 
+    if (voteButton.diabled){
+        //diabling the vote button once voted
+        console.log("It seems you have already voted for this animal.");
+        return;
+    }
     // Increment the votes for the selected animal
     const votesInput = document.getElementById("votes");
     const currentVotes = parseInt(votesInput.value);
     votesInput.value = currentVotes + 1;
-
-    // You can send a request to update the votes on the server if needed
-    // For simplicity, we are just updating the UI in this example
+    voteButton.disabled = true;
 }
 
 // Fetch characters on page load
