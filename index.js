@@ -1,47 +1,57 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const animalList = document.getElementById("animal-list");
-    const animalDetails = document.getElementById("animal-details");
-
+let characters = [];
+// fetcing the data from the db.json file
+function fetchCharacters() {
+    // Make a GET request to retrieve the list of animals
     fetch("http://localhost:3000/characters")
-    .then(response => response.json())
-    .then(data => {
-        const characters = data.characters;
-        characters.forEach(character =>{
-            const nameElement = document.createElement("li");
-            nameElement.textContent = character.name;
-            animalList.appendChild(nameElement);
+        .then(response => response.json())
+        .then(data => {
+            characters = data;
+            displayCharacters(characters);
         })
+}
+// once the data is fetched, the following function will display the fetched data
+function displayCharacters(characters) {
+    const animalList = document.getElementById("character-list");
+    animalList.innerHTML = ""; // Clearing the existing list
+    characters.forEach(character => {
+        const listItem = document.createElement("li");
+        listItem.textContent = character.name;
+        listItem.addEventListener("click", () => displayCharacterDetails(character.id)); //upon a click, an animal will be dispalyed
+        animalList.appendChild(listItem);
     });
-    // Handle clicking on a name to display details
-    animalList.addEventListener("click", (event) => {
-        if (event.target.tagName === "LI") {
-            const characterName = event.target.textContent;
-            fetch(`http://localhost:3000/characters/${characterName}`)
-            .then(response => response.json())
-            .then(data => {
-                const animalDetails = document.getElementById("animal-details");
-                animalDetails.innerHTML = ""; // Clear any previous details
-                const imageElement = document.createElement("img");
-                imageElement.src = data.image;
-                animalDetails.appendChild(imageElement);
-              // Display name and votes
-                const details = document.createElement("p");
-                details.textContent = `Name: ${data.name} | Votes: ${data.votes}`;
-                animalDetails.appendChild(details);
-    
-              // Add vote button
-                const voteButton = document.createElement("button");
-                voteButton.classList.add("vote-button");
-                voteButton.textContent = "Vote for this cutie!";
-                voteButton.addEventListener("click", () => {
-                // Handle voting (implementation goes here)
-                // ...
-                });
-                animalDetails.appendChild(voteButton);
-            })
-            .catch(error => {
-                console.error("Error fetching character details:", error);
-            });
-        }
-    });
-});
+}
+//the individual characters are displayed in reference to the id of the animal clicked
+function displayCharacterDetails(characterId) {
+    // Make a GET request to retrieve details for a specific animal
+    fetch(`http://localhost:3000/characters/${characterId}`)
+        .then(response => response.json())
+        .then(character => {
+            // Display details in the container
+            const container = document.getElementById("character-details");
+            container.innerHTML = `
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" value="${character.name}">
+                <label for="image_url">Image</label>
+                <input type="text" id="image_url" name="image" value="${character.image}">
+                <label for="votes">Votes</label>
+                <input type="text" id="votes" name="votes" value="${character.votes}">
+                <div id="btn">
+                    <button type="button" onclick="voteForAnimal(${character.id})">Vote for the animal</button>
+                </div>
+            `;
+        })
+        .catch(error => console.error("Error fetching animal details:", error));
+}
+
+function voteForAnimal() {
+    // Increment the votes for the selected animal
+    const votesInput = document.getElementById("votes");
+    const currentVotes = parseInt(votesInput.value);
+    votesInput.value = currentVotes + 1;
+
+    // You can send a request to update the votes on the server if needed
+    // For simplicity, we are just updating the UI in this example
+}
+
+// Fetch characters on page load
+fetchCharacters();
